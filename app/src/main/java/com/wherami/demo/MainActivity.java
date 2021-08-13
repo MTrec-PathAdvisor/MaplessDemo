@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wherami.lbs.sdk.Client;
-import mtrec.*;
+//import mtrec.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button mainButton;
