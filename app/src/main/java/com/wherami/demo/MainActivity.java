@@ -14,10 +14,12 @@ import android.widget.Toast;
 import java.io.StreamCorruptedException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import wherami.lbs.sdk.Client;
-import mtrec.*;
+//import mtrec.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button mainButton;
@@ -84,7 +86,10 @@ public class MainActivity extends AppCompatActivity {
             // This is a development server serves as debug purpose only
             // One should setup a http(s) server and host the files under
             // http(s)://<host>/generated_assets/SciencePark-1719W/offline_data/
-            Client.Configure("http://143.89.199.79", "HKUST_v2", this);
+            Client.Configure("http://43.252.40.60", "HKUST_fusion", this);
+            Map<String, Object> config = new HashMap<>();
+            config.put("wherami.lbs.sdk.core.MapEngineFactory:EngineType", "wherami.lbs.sdk.core.NativeMapEngine");
+            Client.ConfigExtra(config);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (StreamCorruptedException e) {

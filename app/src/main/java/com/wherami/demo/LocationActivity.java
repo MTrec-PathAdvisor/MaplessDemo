@@ -65,7 +65,7 @@ public class LocationActivity extends AppCompatActivity implements
         @Override
         public void run() {
             //更新界面
-            textOut.setText("Current Location: (" + mLocation.x + ", " + mLocation.y + ")");
+            textOut.setText("Current Location: (" + mLocation.x + ", " + mLocation.y + ","+mLocation.areaId+")");
         }
 
     };
