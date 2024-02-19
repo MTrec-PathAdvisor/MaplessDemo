@@ -6,24 +6,36 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import java.io.StreamCorruptedException;
 
+import wherami.lbs.sdk.adaptive.IALocation;
+import wherami.lbs.sdk.adaptive.IALocationListener;
+import wherami.lbs.sdk.adaptive.IALocationManager;
+import wherami.lbs.sdk.adaptive.IALocationRequest;
+import wherami.lbs.sdk.adaptive.IAOrientationListener;
+import wherami.lbs.sdk.adaptive.IAOrientationRequest;
 import wherami.lbs.sdk.core.MapEngine;
 import wherami.lbs.sdk.core.MapEngineFactory;
 import wherami.lbs.sdk.data.Location;
 
 public class LocationActivity extends AppCompatActivity implements
-        MapEngine.LocationUpdateCallback { //Implements this interface to receive location update from the MapEngine instance
+//        MapEngine.LocationUpdateCallback
+        IALocationListener,
+        IAOrientationListener
+{ //Implements this interface to receive location update from the MapEngine instance
 
 
-    private static MapEngine engine=null;
+//    private static MapEngine engine=null;
+    IALocationManager mIALocationManager;
     private TextView textOut;
     private Handler handler;
-    private Location mLocation;
-
+    private IALocation mLocation;
+    private float latestHeading;
+    String TAG = "IALocationActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,42 +43,68 @@ public class LocationActivity extends AppCompatActivity implements
 
         textOut = (TextView) findViewById(R.id.textView);
         handler = new Handler();
-        if(engine == null) {
-            engine = MapEngineFactory.Create(getApplicationContext());
-            try {
-                engine.initialize();
-            } catch (StreamCorruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        engine.attachLocationUpdateCallback(this);
-        engine.start();
+
+        Bundle extra = new Bundle();
+        extra.putString(IALocationManager.EXTRA_SITENAME,"WKCD_xiqu");
+
+        mIALocationManager = IALocationManager.create(getApplicationContext(), extra);
+        Log.i(TAG, "onCreate: created WheramiIALocationManager");
+        mIALocationManager.requestLocationUpdates(IALocationRequest.create(),this);
+        Log.i(TAG, "onCreate: reg location update");
+        mIALocationManager.registerOrientationListener(new IAOrientationRequest(5.0D, 5.0D), this);
     }
 
     @Override
     protected void onDestroy() {
+        mIALocationManager.removeLocationUpdates(this);
+        mIALocationManager.unregisterOrientationListener(this);
+        mIALocationManager.destroy();
         super.onDestroy();
-        engine.stop();
     }
-
-    @Override
-    public void onLocationUpdated(final Location location) {
-        new Thread() {
-            @Override
-            public void run() {
-                mLocation = location;
-                handler.post(runnableUi);
-            }
-        }.start();
-
-    }
-
     Runnable runnableUi=new  Runnable(){
         @Override
         public void run() {
             //更新界面
-            textOut.setText("Current Location: (" + mLocation.x + ", " + mLocation.y + ","+mLocation.areaId+")");
+            Log.i(TAG, "run: "+mLocation.toString());
+            textOut.setText("Current Location: (" + mLocation.getLongitude() + ", " + mLocation.getLatitude() + ","+mLocation.getFloorLevel()+")");
         }
-
     };
+
+    @Override
+    public void onLocationChanged(IALocation iaLocation) {
+        new Thread() {
+            @Override
+            public void run() {
+                mLocation = iaLocation;
+                handler.post(runnableUi);
+            }
+        }.start();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.i(TAG, "onStatusChanged: "+provider+" "+status);
+    }
+
+    @Override
+    public void onHeadingChanged(long timestamp, double heading) {
+        Log.i(TAG, "onHeadingChanged: "+timestamp+" "+heading);
+    }
+
+    @Override
+    public void onOrientationChange(long timestamp, double[] quaternion) {
+
+    }
+
+//    @Override
+//    public void onLocationUpdated(final Location location) {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                mLocation = location;
+//                handler.post(runnableUi);
+//            }
+//        }.start();
+//
+//    }
 }

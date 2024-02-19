@@ -81,23 +81,26 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initialize(){
         Log.d("MainActivity", "initialize");
-        try {
-            // The Dataset is downloaded from a server
-            // This is a development server serves as debug purpose only
-            // One should setup a http(s) server and host the files under
-            // http(s)://<host>/generated_assets/SciencePark-1719W/offline_data/
-            Client.Configure("http://43.252.40.60", "HKUST_fusion", this);
-            Map<String, Object> config = new HashMap<>();
-            config.put("wherami.lbs.sdk.core.MapEngineFactory:EngineType", "wherami.lbs.sdk.core.NativeMapEngine");
-            Client.ConfigExtra(config);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (StreamCorruptedException e) {
-            e.printStackTrace();
-        }
 
-
-        checkDataUpdate();
+        mainButton.setEnabled(true);
+        mainButton.setText("START");
+//        try {
+//            // The Dataset is downloaded from a server
+//            // This is a development server serves as debug purpose only
+//            // One should setup a http(s) server and host the files under
+//            // http(s)://<host>/generated_assets/SciencePark-1719W/offline_data/
+//            Client.Configure("http://43.252.40.60", "HKUST_fusion", this);
+//            Map<String, Object> config = new HashMap<>();
+//            config.put("wherami.lbs.sdk.core.MapEngineFactory:EngineType", "wherami.lbs.sdk.core.NativeMapEngine");
+//            Client.ConfigExtra(config);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        } catch (StreamCorruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        checkDataUpdate();
     }
 
     private void checkDataUpdate(){
