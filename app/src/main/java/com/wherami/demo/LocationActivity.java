@@ -66,7 +66,7 @@ public class LocationActivity extends AppCompatActivity implements
         public void run() {
             //更新界面
             Log.i(TAG, "run: "+mLocation.toString());
-            textOut.setText("Current Location: (" + mLocation.getLongitude() + ", " + mLocation.getLatitude() + ","+mLocation.getFloorLevel()+")");
+            textOut.setText("Current Location: "+ mLocation.toString().replace(",",",\n"));
         }
     };
 
