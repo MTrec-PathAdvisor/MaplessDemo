@@ -4,32 +4,29 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.StreamCorruptedException;
-import java.net.URISyntaxException;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import wherami.lbs.sdk.Client;
 //import mtrec.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button mainButton;
-
+    private Button mapButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mainButton = (Button) findViewById(R.id.main_button);
+        mapButton = (Button) findViewById(R.id.map_button);
 
         Log.d("MainActivity", "onCreate");
 
@@ -41,6 +38,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+//        for (String permission : allPermissions){
+//            Log.i("permisssion", permission);
+//            if (ContextCompat.checkSelfPermission(
+//                    this, permission) ==
+//                    PackageManager.PERMISSION_GRANTED) {
+//                // You can use the API that requires the permission.
+//                performAction(...);
+//            } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+//                    this, permission)) {
+//                // In an educational UI, explain to the user why your app requires this
+//                // permission for a specific feature to behave as expected, and what
+//                // features are disabled if it's declined. In this UI, include a
+//                // "cancel" or "no thanks" button that lets the user continue
+//                // using your app without granting the permission.
+//                showInContextUI(...);
+//            } else {
+//                // You can directly ask for the permission.
+//                requestPermissions(new String[]{permission}, 10001);
+//            }
+//        }
 
         if (allPermissions != null) {
             boolean allPermissionsAlreadyGranted = true;
@@ -49,13 +66,14 @@ public class MainActivity extends AppCompatActivity {
                 List<String> permissions2request = new ArrayList<>();
                 for (String permission : allPermissions) {
                     if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                        Log.i("permission", "onCreate: ");
                         allPermissionsAlreadyGranted = false;
                         permissions2request.add(permission);
                     }
                 }
 
                 if (!permissions2request.isEmpty()) {
-                    ActivityCompat.requestPermissions(this,
+                    this.requestPermissions(
                             permissions2request.toArray(new String[0]),
                             0xFFF);
                 }
@@ -72,18 +90,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         initialize();
     }
 
     public void onButtonClicked(View view){
-        Intent intent = new Intent(MainActivity.this, LocationActivity.class);
-        startActivity(intent);
+        switch (view.getId()) {
+            case R.id.main_button:
+                // Button 1 is clicked, start Activity 1
+                Intent intent1 = new Intent(this, LocationActivity.class);
+                startActivity(intent1);
+                break;
+
+            case R.id.map_button:
+                // Button 2 is clicked, start Activity 2
+                Intent intent2 = new Intent(this, MapboxActivity.class);
+                startActivity(intent2);
+                break;
+        }
     }
     private void initialize(){
         Log.d("MainActivity", "initialize");
 
         mainButton.setEnabled(true);
-        mainButton.setText("START");
 //        try {
 //            // The Dataset is downloaded from a server
 //            // This is a development server serves as debug purpose only
@@ -116,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 if(Client.GetDataVersion() != null){
                     //It is possible to continue by using old data
                     mainButton.setEnabled(true);
-                    mainButton.setText("START");
                 }else{
                     //If no data is downloaded previously, it is impossible to continue. Please retry under network environment
                 }
@@ -138,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("MainActivity", "onCompleted");
                         Toast.makeText(MainActivity.this, "Update succeeded", Toast.LENGTH_SHORT);
                         mainButton.setEnabled(true);
-                        mainButton.setText("START");
                     }
 
                     @Override
@@ -148,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                         if(Client.GetDataVersion() != null){
                             //It is possible to continue by using old data
                             mainButton.setEnabled(true);
-                            mainButton.setText("START");
                         }else{
                             //If no data is downloaded previously, it is impossible to continue. Please retry under network environment
                         }
@@ -161,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "onLatestVersion");
                 Toast.makeText(MainActivity.this, "On latest version", Toast.LENGTH_SHORT);
                 mainButton.setEnabled(true);
-                mainButton.setText("START");
             }
         }, this);
     }
