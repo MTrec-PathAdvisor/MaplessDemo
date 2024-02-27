@@ -1,14 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        kotlin_version = '1.6.0'
+    }
     repositories {
         google()
         jcenter()
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
-        
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -19,12 +23,25 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+//        maven {
+//            url "http://43.252.40.61:8081/repository/wherami/"
+//            allowInsecureProtocol = true
+//            credentials {
+//                username 'path_advisor'
+//                password 'hkust'
+//            }
+//        }
         maven {
-            url "http://43.252.40.61:8081/repository/wherami/"
-            allowInsecureProtocol = true
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
             credentials {
-                username 'path_advisor'
-                password 'hkust'
+                // Do not change the username below.
+                // This should always be `mapbox` (not your username).
+                username = 'mapbox'
+                // Use the secret token you stored in gradle.properties as the password
+                password =  "sk.eyJ1IjoicHRzdWl3bCIsImEiOiJja3cwYjR0NW8xOXUyMnVxaWY3Zmo4c210In0.o8_jBBrqTsYlZWVvHrMegw"
             }
         }
     }
