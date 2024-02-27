@@ -2,15 +2,10 @@ package com.wherami.demo;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
-import java.io.StreamCorruptedException;
+import androidx.appcompat.app.AppCompatActivity;
 
 import wherami.lbs.sdk.adaptive.IALocation;
 import wherami.lbs.sdk.adaptive.IALocationListener;
@@ -18,9 +13,6 @@ import wherami.lbs.sdk.adaptive.IALocationManager;
 import wherami.lbs.sdk.adaptive.IALocationRequest;
 import wherami.lbs.sdk.adaptive.IAOrientationListener;
 import wherami.lbs.sdk.adaptive.IAOrientationRequest;
-import wherami.lbs.sdk.core.MapEngine;
-import wherami.lbs.sdk.core.MapEngineFactory;
-import wherami.lbs.sdk.data.Location;
 
 public class LocationActivity extends AppCompatActivity implements
 //        MapEngine.LocationUpdateCallback
@@ -46,7 +38,6 @@ public class LocationActivity extends AppCompatActivity implements
 
         Bundle extra = new Bundle();
         extra.putString(IALocationManager.EXTRA_SITENAME,"WKCD_xiqu");
-
         mIALocationManager = IALocationManager.create(getApplicationContext(), extra);
         Log.i(TAG, "onCreate: created WheramiIALocationManager");
         mIALocationManager.requestLocationUpdates(IALocationRequest.create(),this);
@@ -89,6 +80,7 @@ public class LocationActivity extends AppCompatActivity implements
     @Override
     public void onHeadingChanged(long timestamp, double heading) {
         Log.i(TAG, "onHeadingChanged: "+timestamp+" "+heading);
+        latestHeading = (float) heading;
     }
 
     @Override
