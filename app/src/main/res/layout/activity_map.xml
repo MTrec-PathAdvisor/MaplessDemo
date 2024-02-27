@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapboxActivity">
+
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:mapbox_cameraTargetLat="22.33615"
+        app:mapbox_cameraTargetLng="114.26384"
+        app:mapbox_cameraZoom="2.0"
+        app:mapbox_cameraPitch="0.0"
+        app:mapbox_cameraBearing="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
